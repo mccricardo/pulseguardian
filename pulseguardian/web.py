@@ -98,6 +98,10 @@ fake_account = None
 # restrict access to some pages
 
 
+def is_mozillian(email):
+    return True
+
+
 def load_fake_account(fake_account):
     """Load fake user and setup session."""
 
@@ -256,7 +260,9 @@ def auth_handler():
     if resp.ok:
         # Parse the response
         verification_data = resp.json()
-        if verification_data['status'] == 'okay':
+        if (verification_data['status'] == 'okay' and
+            is_mozillian(verification_data['email'])):
+                
             email = verification_data['email']
             session['email'] = email
 
