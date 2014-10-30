@@ -97,9 +97,20 @@ fake_account = None
 # Decorators and instructions used to inject info into the context or
 # restrict access to some pages
 
+def is_vouched(email):
+    """Check if user is a Mozillian by checking if he/she is vouched."""
+    return True
+
 
 def is_mozillian(email):
-    return True
+    """Check if user is a Mozillian."""
+    domain = email.split('@')[-1].lower()
+    if domain in config.ALLOWED_BID:
+        return True
+    elif is_vouched(email):
+        return True
+    
+    return False
 
 
 def load_fake_account(fake_account):
