@@ -99,32 +99,31 @@ fake_account = None
 # restrict access to some pages
 
 def is_vouched(email):
-    """Check if user is a Mozillian by checking if he/she is vouched."""    
+    """Check if user is a Mozillian by checking if he/she is vouched."""
     if not getattr(config, 'MOZILLIANS_API_KEY', None):
         logging.warning("'MOZILLIANS_API_KEY' not set up.")
         return False
 
     # /api/v1/users/?app_name=foobar&app_key=12345&email=test@example.com
     url = settings.MOZILLIANS_API_BASE + '/api/v1/users/'
-    
+
     data = {
         'app_name': config.MOZILLIANS_API_APPNAME,
         'app_key': config.MOZILLIANS_API_KEY,
         'email': email
     }
-    
-    
+
     url += '?' + urllib.urlencode(data)
     resp = requests.get(url)
-    
+
     if not resp.status_code == 200:
         url = url.replace(settings.MOZILLIANS_API_KEY, 'xxxscrubbedxxx')
         raise BadStatusCodeError('%s: on: %s' % (resp.status_code, url))
-    
+
     content = json.loads(resp.content)
     if content:
         for obj in content['objects']:
-            if obj['email'] ==email.lower():
+            if obj['email'] == email.lower():
                 return obj['is_vouched']
 
     return False
@@ -135,7 +134,7 @@ def is_mozillian(email):
     domain = email.split('@')[-1].lower()
     if domain in config.ALLOWED_BID:
         return True
-    
+
     return is_vouched(email)
 
 
@@ -299,7 +298,7 @@ def auth_handler():
         verification_data = resp.json()
         if (verification_data['status'] == 'okay' and
             is_mozillian(verification_data['email'])):
-                
+
             email = verification_data['email']
             session['email'] = email
 
