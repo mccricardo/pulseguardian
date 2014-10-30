@@ -36,7 +36,7 @@ MAX_LOG_SIZE = 20480
 
 # Domains allowed for log in
 ALLOWED_BID = (
-'mozilla.com',
-'mozillafoundation.org',
-'mozilla-japan.org',
+    'mozilla.com',
+    'mozillafoundation.org',
+    'mozilla-japan.org',
 )
