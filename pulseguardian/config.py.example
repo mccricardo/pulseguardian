@@ -40,3 +40,7 @@ ALLOWED_BID = (
     'mozillafoundation.org',
     'mozilla-japan.org',
 )
+
+# Access Mozillians API
+MOZILLIANS_API_KEY = ''
+MOZILLIANS_API_APPNAME = ''
