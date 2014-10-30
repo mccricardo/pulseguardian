@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import argparse
+import json
 import logging
 import logging.handlers
 import os.path
@@ -98,8 +99,35 @@ fake_account = None
 # restrict access to some pages
 
 def is_vouched(email):
-    """Check if user is a Mozillian by checking if he/she is vouched."""
-    return True
+    """Check if user is a Mozillian by checking if he/she is vouched."""    
+    if not getattr(config, 'MOZILLIANS_API_KEY', None):
+        logging.warning("'MOZILLIANS_API_KEY' not set up.")
+        return False
+
+    # /api/v1/users/?app_name=foobar&app_key=12345&email=test@example.com
+    url = settings.MOZILLIANS_API_BASE + '/api/v1/users/'
+    
+    data = {
+        'app_name': config.MOZILLIANS_API_APPNAME,
+        'app_key': config.MOZILLIANS_API_KEY,
+        'email': email
+    }
+    
+    
+    url += '?' + urllib.urlencode(data)
+    resp = requests.get(url)
+    
+    if not resp.status_code == 200:
+        url = url.replace(settings.MOZILLIANS_API_KEY, 'xxxscrubbedxxx')
+        raise BadStatusCodeError('%s: on: %s' % (resp.status_code, url))
+    
+    content = json.loads(resp.content)
+    if content:
+        for obj in content['objects']:
+            if obj['email'] ==email.lower():
+                return obj['is_vouched']
+
+    return False
 
 
 def is_mozillian(email):
@@ -107,10 +135,8 @@ def is_mozillian(email):
     domain = email.split('@')[-1].lower()
     if domain in config.ALLOWED_BID:
         return True
-    elif is_vouched(email):
-        return True
     
-    return False
+    return is_vouched(email)
 
 
 def load_fake_account(fake_account):
