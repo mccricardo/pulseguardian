@@ -25,11 +25,11 @@ def upgrade():
                   sa.ForeignKey('pulse_users.id'), nullable=False),
     )
 
-    op.add_column('users',
-                  sa.Column('pulse_users', sa.Integer,
-                            sa.ForeignKey('pulse_user_owners.users_id')))
+    op.drop_constraint('pulse_users_ibfk_1', 'pulse_users', 'foreignkey')
+    op.drop_column('pulse_users', 'owner_id')
 
 
 def downgrade():
     op.drop_table('pulse_user_owners')
-    op.drop_column('users', 'pulse_users')
+    op.add_column('pulse_users', sa.Column('owner_id', sa.Integer,
+                  sa.ForeignKey('users.id')))
