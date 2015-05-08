@@ -19,7 +19,6 @@ class PulseUser(Base):
     __tablename__ = 'pulse_users'
 
     id = Column(Integer, primary_key=True)
-    owner_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     username = Column(String(255), unique=True)
 
     queues = relationship(
@@ -31,7 +30,7 @@ class PulseUser(Base):
         his password. Then creates a RabbitMQ user if needed and sets
         permissions.
         """
-        pulse_user = PulseUser(owner=owner, username=username)
+        pulse_user = PulseUser(owner=[owner], username=username)
 
         if management_api is not None:
             management_api.create_user(username=username, password=password)

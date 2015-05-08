@@ -2,11 +2,22 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 
 from base import Base, db_session
 from pulse_user import PulseUser
+
+
+pulse_user_owners = Table('pulse_user_owners',
+                          Base.metadata,
+                          Column('users_id',
+                                 Integer,
+                                 ForeignKey('users.id')),
+                          Column('pulse_users_id',
+                                 Integer,
+                                 ForeignKey('pulse_users.id')))
+
 
 class User(Base):
     """Pulse Guardian User class, identified by an email address."""
@@ -18,7 +29,8 @@ class User(Base):
     admin = Column(Boolean)
 
     pulse_users = relationship(PulseUser, backref='owner',
-                               cascade='save-update, merge, delete')
+                               cascade='save-update, merge, delete',
+                               secondary=pulse_user_owners)
 
     @staticmethod
     def new_user(email, admin=False):
