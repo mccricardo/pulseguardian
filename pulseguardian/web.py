@@ -21,6 +21,7 @@ from model.base import db_session, init_db
 from model.pulse_user import PulseUser
 from model.user import User
 from model.queue import Queue
+from model.invite import Invite
 from management import PulseManagementAPI, PulseManagementException
 
 # Development cert/key base filename.
@@ -343,6 +344,7 @@ def register_handler():
     username = request.form['username']
     password = request.form['password']
     password_verification = request.form['password-verification']
+    invited_users = [user for user in request.form['users'].split(',')]
     email = session['email']
     errors = []
 
@@ -375,7 +377,10 @@ def register_handler():
         return render_template('register.html', email=email,
                                signup_errors=errors)
 
-    PulseUser.new_user(username, password, g.user, pulse_management)
+    pulse_user = PulseUser.new_user(username, password, g.user, pulse_management)
+    for invited_user in invited_users:
+        print invited_user
+        Invite.new_invite(g.user.id, pulse_user.id)
 
     return redirect('/profile')
 
