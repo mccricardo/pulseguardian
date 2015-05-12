@@ -19,9 +19,11 @@ import sqlalchemy as sa
 def upgrade():
     op.create_table(
         'invites',
-        sa.Column('users_id', sa.Integer, sa.ForeignKey('users.id'),
+        sa.Column('id', sa.Integer, primary_key=True,
                   nullable=False),
-        sa.Column('pulse_users_id', sa.Integer,
+        sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id'),
+                  nullable=False),
+        sa.Column('pulse_user_id', sa.Integer,
                   sa.ForeignKey('pulse_users.id'), nullable=False),
     )
 
