@@ -379,8 +379,9 @@ def register_handler():
 
     pulse_user = PulseUser.new_user(username, password, g.user, pulse_management)
     for invited_user in invited_users:
-        print invited_user
-        Invite.new_invite(g.user.id, pulse_user.id)
+        user = User.query.filter(User.email == invited_user).first()
+        if user and user.id != g.user.id:
+            Invite.new_invite(user.id, pulse_user.id)
 
     return redirect('/profile')
 
