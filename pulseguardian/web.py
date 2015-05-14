@@ -344,7 +344,9 @@ def register_handler():
     username = request.form['username']
     password = request.form['password']
     password_verification = request.form['password-verification']
-    invited_users = [user for user in request.form['users'].split(',')]
+    invited_users = [user.strip()
+                     for user in request.form['users'].split(',')
+                     if user != '']
     email = session['email']
     errors = []
 
@@ -380,10 +382,17 @@ def register_handler():
     pulse_user = PulseUser.new_user(username, password, g.user, pulse_management)
     for invited_user in invited_users:
         user = User.query.filter(User.email == invited_user).first()
-        if user and user.id != g.user.id:
+        # If user does not exist, warn.
+        if not user:
+            errors.append(('User {0} does not exist').format(invited_user))
+        # Check if User is inviting himself.
+        elif user.id == g.user.id:
+            errors.append('Cannot invite yourself.')
+        # If everything is ok, register invite
+        else:
             Invite.new_invite(user.id, pulse_user.id)
 
-    return redirect('/profile')
+    return profile(messages=errors if len(errors) != 0 else None)
 
 
 @app.route('/auth/logout', methods=['POST'])
