@@ -20,12 +20,20 @@
       </span>
     {% endif %}
 
-    {% if cur_user %}
+    {% if cur_user %} 
       <a href="/profile">
         <span class="username right-link nav-box">
           <span class="glyphicon glyphicon-user"></span> {{cur_user.email}}
         </span>
       </a>
+      {% if invites %}
+        <a href="#">
+          <span class="invites right-link nav-box">
+            <span class="glyphicon glyphicon-user"></span> 
+              {{ invites }}
+          </span>
+        </a>
+      {% endif %}
     {% endif %}
   </div>
 </div>
