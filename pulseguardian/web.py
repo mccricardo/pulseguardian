@@ -201,9 +201,17 @@ def profile(error=None, messages=None):
 def all_pulse_users():
     users = db_session.query(
         PulseUser.username,
+        case([(User.email == None, "None")], else_=User.email)).join(
+            User.pulse_users).all()
+
+    '''
+    users = db_session.query(
+        PulseUser.username,
         case([(User.email == None, "None")], else_=User.email)).outerjoin(
             User, User.id == PulseUser.owner_id).all()
+    '''
     return render_template('all_pulse_users.html', users=users)
+
 
 @app.route('/queues')
 @requires_login

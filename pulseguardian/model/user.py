@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from sqlalchemy import Boolean, Column, Integer, String, Table, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from base import Base, db_session
 from pulse_user import PulseUser
@@ -28,7 +28,7 @@ class User(Base):
     email = Column(String(255), unique=True)
     admin = Column(Boolean)
 
-    pulse_users = relationship(PulseUser, backref='owner',
+    pulse_users = relationship(PulseUser, backref=backref('users'),
                                cascade='save-update, merge, delete',
                                secondary=pulse_user_owners)
 

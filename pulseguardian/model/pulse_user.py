@@ -30,7 +30,7 @@ class PulseUser(Base):
         his password. Then creates a RabbitMQ user if needed and sets
         permissions.
         """
-        pulse_user = PulseUser(owner=[owner], username=username)
+        pulse_user = PulseUser(users=[owner], username=username)
 
         if management_api is not None:
             management_api.create_user(username=username, password=password)
@@ -74,7 +74,6 @@ class PulseUser(Base):
         db_session.commit()
 
     def __repr__(self):
-        return "<PulseUser(username='{0}', owner='{1}')>".format(self.username,
-                                                                 self.owner)
+        return "<PulseUser(username='{0}')>".format(self.username)
 
     __str__ = __repr__
