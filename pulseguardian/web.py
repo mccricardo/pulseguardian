@@ -196,6 +196,7 @@ def profile(error=None, messages=None):
                            no_owner_queues=no_owner_queues,
                            error=error, messages=messages, invites=invites)
 
+
 @app.route('/all_pulse_users')
 @requires_login
 def all_pulse_users():
@@ -204,12 +205,6 @@ def all_pulse_users():
         case([(User.email == None, "None")], else_=User.email)).join(
             User.pulse_users).all()
 
-    '''
-    users = db_session.query(
-        PulseUser.username,
-        case([(User.email == None, "None")], else_=User.email)).outerjoin(
-            User, User.id == PulseUser.owner_id).all()
-    '''
     return render_template('all_pulse_users.html', users=users)
 
 
@@ -233,6 +228,12 @@ def queues_listing():
         no_owner_queues = list(Queue.query.filter(Queue.owner == None))
     return render_template('queues_listing.html', users=users,
                            no_owner_queues=no_owner_queues)
+
+
+@app.route('/invites')
+@requires_login
+def invites():
+    return render_template('invites.html')
 
 # API
 
