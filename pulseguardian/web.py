@@ -8,6 +8,7 @@ import logging.handlers
 import os.path
 import re
 import sys
+from collections import defaultdict
 from functools import wraps
 
 import requests
@@ -204,6 +205,12 @@ def all_pulse_users():
         PulseUser.username,
         case([(User.email == None, "None")], else_=User.email)).join(
             User.pulse_users).all()
+
+    # Converting users list of tuples into dictionary
+    # grouping pulse_users by user.
+    dict_users = defaultdict(list)
+    for user, pulse_user in users:
+        dict_users[user].append(pulse_user)
 
     return render_template('all_pulse_users.html', users=users)
 
