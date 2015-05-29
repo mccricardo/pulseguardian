@@ -207,10 +207,16 @@ def all_pulse_users():
             User.pulse_users).all()
 
     # Converting users list of tuples into dictionary
-    # grouping pulse_users by user.
+    # grouping users by pulse_user.
     dict_users = defaultdict(list)
-    for user, pulse_user in users:
-        dict_users[user].append(pulse_user)
+    for pulse_user, user in users:
+        dict_users[pulse_user].append(user)
+
+    # Update users list of tuples, merging users into strings.
+    del users[:]
+    for pulse_user in dict_users.keys():
+        dict_users[pulse_user].sort()
+        users.append((pulse_user, (', ').join(dict_users[pulse_user])))
 
     return render_template('all_pulse_users.html', users=users)
 
