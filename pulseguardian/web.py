@@ -137,12 +137,13 @@ def requires_login(f):
 def inject_user():
     """Injects a user and configuration in templates' context."""
     cur_user = User.query.filter(User.email == session.get('email')).first()
+    invites = Invite.query.filter(Invite.user_id == g.user.id).count()
     if cur_user and cur_user.pulse_users:
         pulse_user = cur_user.pulse_users[0]
     else:
         pulse_user = None
     return dict(cur_user=cur_user, pulse_user=pulse_user, config=config,
-                session=session)
+                session=session, invites=invites)
 
 
 @app.before_request
@@ -189,13 +190,12 @@ def register():
 @requires_login
 def profile(error=None, messages=None):
     users = no_owner_queues = []
-    invites = Invite.query.filter(Invite.user_id == g.user.id).count()
     if g.user.admin:
         users = User.query.all()
         no_owner_queues = list(Queue.query.filter(Queue.owner == None))
     return render_template('profile.html', users=users,
                            no_owner_queues=no_owner_queues,
-                           error=error, messages=messages, invites=invites)
+                           error=error, messages=messages)
 
 
 @app.route('/all_pulse_users')
