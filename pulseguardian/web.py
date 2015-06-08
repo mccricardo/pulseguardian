@@ -246,7 +246,10 @@ def queues_listing():
 @app.route('/invites')
 @requires_login
 def invites():
-    return render_template('invites.html')
+    pulse_users = PulseUser.query.filter(
+        Invite.user_id == g.user.id).join(Invite).all()
+
+    return render_template('invites.html', pulse_users=pulse_users)
 
 # API
 
