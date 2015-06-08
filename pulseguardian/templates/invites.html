@@ -1,9 +1,29 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<div class="col-md-12">
+  <h3>All invites</h3>
 
+  <ul class="list-group pulse-users">
+    <table id="pulse_users" width="100%">
+      <thead>
+          <tr>
+            <th>Pulse User</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pulse_user in pulse_users %}
+            <tr>
+              <td>{{pulse_user}}</td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </ul>
+</div>
 {% endblock %}
 
 {% block javascript %}
-
+  <script type="text/javascript" src="/static/js/users_listing.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
 {% endblock %}
