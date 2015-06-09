@@ -3,22 +3,19 @@
 {% block body %}
 <div class="col-md-12">
   <h3>All invites</h3>
-
   <ul class="list-group pulse-users">
-    <table id="pulse_users" width="100%">
-      <thead>
-          <tr>
-            <th>Pulse User</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for pulse_user in pulse_users %}
-            <tr>
-              <td>{{pulse_user.username}}</td>
-            </tr>
-          {% endfor %}
-      </tbody>
-    </table>
+    {% for pulse_user in pulse_users %}
+      <li class="list-group-item pulse-user"
+          data-pulse-user-name="{{pulse_user.username}}">
+        <h4>
+          {{pulse_user.username}}
+          <span class="pull-right">
+            <span class="glyphicon glyphicon-ok accept"></span>
+            <span class="glyphicon glyphicon-remove reject"></span>
+          </span>
+        </h4>
+      </li>
+     {% endfor %}
   </ul>
 </div>
 {% endblock %}
