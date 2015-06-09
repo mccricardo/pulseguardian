@@ -118,12 +118,12 @@ a:hover, a:active, a:focus {
 }
 
 .accept {
-  color: #00FF00;
+  color: #32CD32;
   cursor: pointer;
 }
 
 .accept:hover {
-  color: #80FF00;
+  color: #62CD62;
 }
 
 .autoreload {
