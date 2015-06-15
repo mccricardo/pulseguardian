@@ -251,6 +251,19 @@ def invites():
 
     return render_template('invites.html', pulse_users=pulse_users)
 
+
+@app.route('/accept_invite')
+@requires_login
+def accept_invite():
+    return redirect('/profile')
+
+
+@app.route('/reject_invite')
+@requires_login
+def reject_invite():
+    return redirect('/profile')
+
+
 # API
 
 @app.route('/queue/<path:queue_name>', methods=['DELETE'])
