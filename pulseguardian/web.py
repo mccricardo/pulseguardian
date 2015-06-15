@@ -255,12 +255,16 @@ def invites():
 @app.route('/accept_invite/<pulse_user_id>')
 @requires_login
 def accept_invite(pulse_user_id):
+    invite = Invite.query.filter(Invite.user_id == g.user.id,
+                                 Invite.pulse_user_id == pulse_user_id).first()
     return redirect('/profile')
 
 
 @app.route('/reject_invite/<pulse_user_id>')
 @requires_login
 def reject_invite(pulse_user_id):
+    invite = Invite.query.filter(Invite.user_id == g.user.id,
+                                 Invite.pulse_user_id == pulse_user_id).first()
     return redirect('/profile')
 
 
