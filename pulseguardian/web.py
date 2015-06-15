@@ -252,15 +252,15 @@ def invites():
     return render_template('invites.html', pulse_users=pulse_users)
 
 
-@app.route('/accept_invite')
+@app.route('/accept_invite/<pulse_user_id>')
 @requires_login
-def accept_invite():
+def accept_invite(pulse_user_id):
     return redirect('/profile')
 
 
-@app.route('/reject_invite')
+@app.route('/reject_invite/<pulse_user_id>')
 @requires_login
-def reject_invite():
+def reject_invite(pulse_user_id):
     return redirect('/profile')
 
 
