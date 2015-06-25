@@ -15,6 +15,7 @@ import requests
 import sqlalchemy.orm.exc
 import werkzeug.serving
 from flask import Flask, render_template, session, g, redirect, request, jsonify
+from sqlalchemy import delete
 from sqlalchemy.sql.expression import case
 
 import config
@@ -265,6 +266,15 @@ def accept_invite(pulse_user_id):
 def reject_invite(pulse_user_id):
     invite = Invite.query.filter(Invite.user_id == g.user.id,
                                  Invite.pulse_user_id == pulse_user_id).first()
+
+    pulse_user = PulseUser.query.filter(PulseUser.id == invite.pulse_user_id).first()
+
+    # Removing rows from the database
+    db_session.delete(invite)
+    db_session.delete(pulse_user)
+
+    db_session.commit()
+
     return redirect('/profile')
 
 
