@@ -258,6 +258,17 @@ def invites():
 def accept_invite(pulse_user_id):
     invite = Invite.query.filter(Invite.user_id == g.user.id,
                                  Invite.pulse_user_id == pulse_user_id).first()
+
+    pulse_user = PulseUser.query.filter(
+        PulseUser.id == invite.pulse_user_id).first()
+
+    # Update pulse_user
+    pulse_user.users.append(g.user)
+
+    # Removing invite
+    db_session.delete(invite)
+    db_session.commit()
+
     return redirect('/profile')
 
 
