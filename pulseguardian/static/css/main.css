@@ -108,6 +108,14 @@ a:hover, a:active, a:focus {
   color: #e52e38;
 }
 
+.unfollow {
+  cursor: pointer;
+}
+
+.unfollow:hover {
+  color: #555555;
+}
+
 .reject {
   color: #e10809;
   cursor: pointer;
