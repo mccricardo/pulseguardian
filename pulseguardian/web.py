@@ -315,14 +315,23 @@ def delete_queue(queue_name):
 @requires_login
 def delete_pulse_user(pulse_username):
     logging.info('Request to delete Pulse user "{0}".'.format(pulse_username))
-    pulse_user = PulseUser.query.filter(PulseUser.username == pulse_username).first()
+    pulse_user = PulseUser.query.filter(
+        PulseUser.username == pulse_username).first()
 
-    if pulse_user and (g.user.admin or pulse_user.owner == g.user):
+    if pulse_user and (g.user.admin or pulse_user in g.user.pulse_users):
+        # Take care of pending invites
+        invites = Invite.query.filter(
+            Invite.pulse_user_id == pulse_user.id).all()
+        for invite in invites:
+            db_session.delete(invite)
+            db_session.commit()
+
+        # We can now safely delete pulse_user
         try:
             pulse_management.delete_user(pulse_user.username)
         except PulseManagementException as e:
             logging.warning("Couldn't delete user '{0}' on "
-                               "rabbitmq: {1}".format(pulse_username, e))
+                            "rabbitmq: {1}".format(pulse_username, e))
             return jsonify(ok=False)
         logging.info('Pulse user "{0}" deleted.'.format(pulse_username))
         db_session.delete(pulse_user)
