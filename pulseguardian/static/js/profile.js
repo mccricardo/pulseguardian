@@ -23,8 +23,20 @@ $(document).ready(function() {
         });
     }
 
+    function unfollowObjecthandler(objectType) {
+        $('.' + objectType + 's .unfollow').click(function() {
+            var objectInstance = $(this).closest('.' + objectType);
+            var objectName = objectInstance.data(objectType + '-name');
+            var modal = $('.modal-unfollow-' + objectType);
+            modal.data(objectType + '-object', objectInstance);
+            modal.find('.' + objectType + '-name').text(objectName);
+            modal.modal();
+        });
+    }
+
     deleteableObjectHandler('queue');
     deleteableObjectHandler('pulse-user');
+    unfollowObjecthandler('pulse-user');
 
     $('.pulse-users .edit').click(function() {
         var details = $($(this).closest('.pulse-user'))
