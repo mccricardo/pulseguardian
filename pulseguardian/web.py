@@ -340,6 +340,10 @@ def delete_pulse_user(pulse_username):
 
     return jsonify(ok=False)
 
+@app.route('/unfollow/pulse-user/<pulse_username>', methods=['DELETE'])
+@requires_login
+def unfollow_pulse_user(pulse_username):
+    logging.info('Request to unfollow Pulse user "{0}".'.format(pulse_username))
 
 # Authentication related
 
