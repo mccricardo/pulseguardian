@@ -94,6 +94,38 @@ $(document).ready(function() {
         });
     }
 
+    function unfollowableObject(objectType) {
+        function unfollowObject(objectInstance, objectName) {
+            $.ajax({
+                url: '/' + 'unfollow/' + objectType + '/' + objectName,
+                type: 'DELETE',
+                success: function(result) {
+                    if (!result.ok) {
+                        errorMessage("Couldn't unfollow " + objectType + " '" +
+                                     objectName + "'.");
+                        return;
+                    }
+
+                    $(objectInstance).slideUp(300);
+                },
+                error: function() {
+                    errorMessage("Couldn't unfollow " + objectType + " '" +
+                             objectName + "'.");
+                },
+                complete: function() {
+                    $('.modal-unfollow-' + objectType).modal('hide');
+                }
+            });
+        }
+
+        var modalClass = '.modal-unfollow-' + objectType;
+        $(modalClass + ' .unfollow-' + objectType + '-ok').click(function() {
+            unfollowObject($(modalClass).data(objectType + '-object'),
+                         $(modalClass + ' .' + objectType + '-name').text());
+        });
+    }
+
     deleteableObject('queue');
     deleteableObject('pulse-user');
+    unfollowableObject('pulse-user');
 });
