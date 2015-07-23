@@ -340,10 +340,29 @@ def delete_pulse_user(pulse_username):
 
     return jsonify(ok=False)
 
+
 @app.route('/unfollow/pulse-user/<pulse_username>', methods=['DELETE'])
 @requires_login
 def unfollow_pulse_user(pulse_username):
-    logging.info('Request to unfollow Pulse user "{0}".'.format(pulse_username))
+    logging.info(
+        'Request to unfollow Pulse user "{0}".'.format(pulse_username))
+    pulse_user = PulseUser.query.filter(
+        PulseUser.username == pulse_username).first()
+
+    if pulse_user and pulse_user in g.user.pulse_users:
+        # Check if there are more users following this pulse_user
+        if len(pulse_user.users) > 1:
+            g.user.pulse_users.remove(pulse_user)
+            db_session.commit()
+            return jsonify(ok=True)
+        else:
+            # User is the only one respoonsible for this pulse_use.
+            # Can't unfollow.
+            logging.warning(
+                "Couldn't unfollow pulse_user '{0}'".format(pulse_username))
+
+    return jsonify(ok=False)
+
 
 # Authentication related
 
